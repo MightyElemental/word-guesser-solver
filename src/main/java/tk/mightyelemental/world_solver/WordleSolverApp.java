@@ -33,7 +33,6 @@ public class WordleSolverApp {
 		if (args.length <= 0) exitError("No arguments supplied!");
 
 		excludedLetters = new HashSet<Character>();
-		// TODO: Include maximum occurrences and known wrong placement
 		includedLetters = new HashMap<Character, LetterRestriction>();
 		knownLetters = new HashMap<Integer, Character>();
 		dictionary = new HashSet<String>();
@@ -153,7 +152,6 @@ public class WordleSolverApp {
 			}
 
 			if (inputWord.length() != resultWord.length()) exitError("Word and Result must be the same length!");
-			// TODO: Allow multiple letters with some in correct place, some excluded, some included
 			processInput(inputWord, resultWord);
 		}
 	}
@@ -278,7 +276,6 @@ public class WordleSolverApp {
 		System.out.println("\t? - the letter is in the word but in the wrong place");
 		System.out.println("\t! - the letter is not in the word");
 		System.out.println("\tAny letter a-z - the letter is in the word and in the correct place");
-		// TODO: Write instruction display
 		System.exit(1);
 	}
 }
