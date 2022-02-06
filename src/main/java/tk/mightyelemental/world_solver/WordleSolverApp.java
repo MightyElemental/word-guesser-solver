@@ -72,10 +72,21 @@ public class WordleSolverApp {
 		System.out.printf("Loaded %d words\n", dictionary.size());
 	}
 
+	/**
+	 * Counts the number of words filtered by the knowledge base
+	 * 
+	 * @return The number of words in the filtered dictionary
+	 * @see #getPossibleWords()
+	 */
 	public static int countPossibleWords() {
 		return getPossibleWords().size();
 	}
 
+	/**
+	 * Filter the dictionary with the information from the knowledge base
+	 * 
+	 * @return A set of words from the dictionary filtered by the knowledge base
+	 */
 	public static Set<String> getPossibleWords() {
 		return dictionary.stream().filter(s -> s.length() == wordLength).filter(str -> {
 
@@ -262,6 +273,11 @@ public class WordleSolverApp {
 	 */
 	public static void exitError( String msg ) {
 		error(msg);
+		System.out.println("\nEnter arguments in the following format- word:result");
+		System.out.println("The result can contain letters a-z as well as ? and !");
+		System.out.println("\t? - the letter is in the word but in the wrong place");
+		System.out.println("\t! - the letter is not in the word");
+		System.out.println("\tAny letter a-z - the letter is in the word and in the correct place");
 		// TODO: Write instruction display
 		System.exit(1);
 	}
