@@ -20,13 +20,13 @@ public class WordleSolverApp {
 	public static int wordLength = 5;
 
 	/** A collection of letters that are not part of the word */
-	public static Set<Character>				excludedLetters;
+	public static Set<Character>							excludedLetters;
 	/** A collection of letters that are part of the word but the placement is unknown */
-	public static Set<Character>				includedLetters;
+	public static Map<Character, LetterRestriction>	includedLetters;
 	/** A collection of included letters and their position in the word */
-	public static Map<Integer, Character>	knownLetters;
+	public static Map<Integer, Character>				knownLetters;
 	/** The dictionary */
-	public static Set<String>					dictionary;
+	public static Set<String>								dictionary;
 
 	public static void main( String[] args ) {
 
@@ -34,7 +34,7 @@ public class WordleSolverApp {
 
 		excludedLetters = new HashSet<Character>();
 		// TODO: Include maximum occurrences and known wrong placement
-		includedLetters = new HashSet<Character>();
+		includedLetters = new HashMap<Character, LetterRestriction>();
 		knownLetters = new HashMap<Integer, Character>();
 		dictionary = new HashSet<String>();
 
@@ -74,10 +74,21 @@ public class WordleSolverApp {
 
 	public static Set<String> getPossibleWords() {
 		return dictionary.stream().filter(s -> s.length() == wordLength).filter(str -> {
+
+			for (int i = 0; i < str.length(); i++) {
+				char c = str.charAt(i);
+				if (includedLetters.containsKey(c)) {
+					if (includedLetters.get(c).wrongPlacements.contains(i)) {
+						return false;
+					}
+				}
+			}
+
 			HashSet<Character> set = new HashSet<>();
 			str.chars().forEach(e -> set.add((char) e));
+
 			// Set contains all include letters and does not contain any exclude letters
-			return set.containsAll(includedLetters) && !set.removeAll(excludedLetters);
+			return set.containsAll(includedLetters.keySet()) && !set.removeAll(excludedLetters);
 		}).filter(s -> {
 			for (Map.Entry<Integer, Character> entry : knownLetters.entrySet()) {
 				Integer key = entry.getKey();
@@ -146,15 +157,19 @@ public class WordleSolverApp {
 				}
 				// Put data into knowledge base
 				knownLetters.put(i, input.charAt(i));
-				includedLetters.add(input.charAt(i));
+				// includedLetters.add(input.charAt(i));
+				addIncludedLetter(input.charAt(i), -1);
 
 			} else {
+				// TODO: Test for max occurrences
 				switch (result.charAt(i)) {
 					case '?':
-						includedLetters.add(input.charAt(i));
+						// includedLetters.add(input.charAt(i));
+						addIncludedLetter(input.charAt(i), i);
 						break;
 					case '!':
 						// TODO: Write exclude case
+						excludedLetters.add(input.charAt(i));
 						break;
 					default:
 						error("Unknown character in result string");
@@ -171,6 +186,20 @@ public class WordleSolverApp {
 		System.out.printf("\nCurrent: %s", current);
 		System.out.println("\n---\n");
 
+	}
+
+	/**
+	 * Adds a letter to the {@link #includedLetters} collection.
+	 * 
+	 * @param c the character that is included
+	 * @param index the position of the letter that it was found to be wrong
+	 */
+	public static void addIncludedLetter( char c, int index ) {
+		if (includedLetters.containsKey(c)) {
+			includedLetters.get(c).addWrongPlacement(index);
+		} else {
+			includedLetters.put(c, new LetterRestriction().addWrongPlacement(index));
+		}
 	}
 
 	/**
