@@ -23,7 +23,7 @@ Each argument consists of a word and the result of the word, delimited by a colo
 ### Example usage:
 
 ```bash
-> java -jar wordlesolve.jar 'crane:c!?!e'
+> java -jar wordsolve.jar 'crane:c!?!e'
 Loaded 194433 words
 Processed input - crane:c!?!e
 Excluded: [r, n]

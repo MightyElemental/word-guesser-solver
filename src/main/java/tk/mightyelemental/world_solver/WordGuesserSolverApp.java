@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 /**
  * @author MightyElemental
  */
-public class WordleSolverApp {
+public class WordGuesserSolverApp {
 
 	/** The length of the word to be guessed */
 	public static int wordLength = 5;
