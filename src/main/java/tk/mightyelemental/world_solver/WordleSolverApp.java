@@ -10,6 +10,9 @@ import java.util.Set;
  */
 public class WordleSolverApp {
 
+	/** The length of the word to be guessed */
+	public static int wordLength = 5;
+
 	/** A collection of letters that are not part of the word */
 	public static Set<Character>				excludedLetters;
 	/** A collection of letters that are part of the word but the placement is unknown */
@@ -54,6 +57,15 @@ public class WordleSolverApp {
 			String inputWord = splitArg[0];
 			String resultWord = splitArg[1];
 
+			if (inputWord.length() != wordLength) {
+				if (i == 0) {
+					wordLength = inputWord.length();
+					System.out.printf("Set word length: %d words\n", wordLength);
+				} else {
+					exitError("Input word is not the same length as prior arguments!");
+				}
+			}
+
 			if (inputWord.length() != resultWord.length()) exitError("Word and Result must be the same length!");
 			// TODO: Allow multiple letters with some in correct place, some excluded, some included
 			processInput(inputWord, resultWord);
@@ -80,6 +92,7 @@ public class WordleSolverApp {
 				// Put data into knowledge base
 				knownLetters.put(i, input.charAt(i));
 				includedLetters.add(input.charAt(i));
+
 			} else {
 				switch (result.charAt(i)) {
 					case '?':
@@ -94,6 +107,32 @@ public class WordleSolverApp {
 			}
 
 		}
+
+		System.out.printf("Processed input - %s:%s\n", input, result);
+		System.out.printf("Excluded: %s\n", excludedLetters);
+		System.out.printf("Included: %s\n", includedLetters);
+		System.out.printf("Known: %s\n", knownLetters);
+		String current = currentWord();
+		System.out.printf("\nCurrent: %s", current);
+		System.out.println("\n---\n");
+
+	}
+
+	/**
+	 * Generate a string showing what we know the current word should contain
+	 * 
+	 * @return The current known word
+	 */
+	public static String currentWord() {
+
+		StringBuilder sb = new StringBuilder("-".repeat(wordLength));
+		for (Map.Entry<Integer, Character> entry : knownLetters.entrySet()) {
+			Integer key = entry.getKey();
+			Character val = entry.getValue();
+			sb.replace(key, key + 1, val.toString());
+		}
+
+		return sb.toString();
 	}
 
 	/**
