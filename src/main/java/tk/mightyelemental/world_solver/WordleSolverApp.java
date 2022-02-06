@@ -1,9 +1,14 @@
 package tk.mightyelemental.world_solver;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * @author MightyElemental
@@ -31,8 +36,28 @@ public class WordleSolverApp {
 		knownLetters = new HashMap<Integer, Character>();
 		dictionary = new HashSet<String>();
 
+		// TODO: Add argument for changing dictionary
+		loadDictionary(null);
+
 		processArguments(args);
 
+	}
+
+	/**
+	 * Load the dictionary from a file containing each word on a new line.
+	 * 
+	 * @param location the file path
+	 * @see #dictionary
+	 */
+	public static void loadDictionary( String location ) {
+		if (location == null) location = "english.txt";
+
+		try (Stream<String> stream = Files.lines(Paths.get(location), StandardCharsets.UTF_8)) {
+			stream.forEach(s -> dictionary.add(s));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.printf("Loaded %d words\n", dictionary.size());
 	}
 
 	/**
