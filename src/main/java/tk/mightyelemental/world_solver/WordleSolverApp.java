@@ -71,7 +71,7 @@ public class WordleSolverApp {
 		}
 		System.out.printf("Loaded %d words\n", dictionary.size());
 	}
-	
+
 	public static int countPossibleWords() {
 		return getPossibleWords().size();
 	}
@@ -185,10 +185,8 @@ public class WordleSolverApp {
 		System.out.printf("Processed input - %s:%s\n", input, result);
 		System.out.printf("Excluded: %s\n", excludedLetters);
 		System.out.printf("Included: %s\n", includedLetters);
-		System.out.printf("Known: %s\n", knownLetters);
-		String current = currentWord();
-		System.out.printf("\nCurrent: %s\n", current);
-		System.out.printf("Potential Words: %d\n",countPossibleWords());
+		System.out.printf("Known: %s\n", currentWord());
+		System.out.printf("Potential Words: %d\n", countPossibleWords());
 		System.out.println("---\n");
 
 	}
