@@ -33,6 +33,7 @@ public class WordleSolverApp {
 		if (args.length <= 0) exitError("No arguments supplied!");
 
 		excludedLetters = new HashSet<Character>();
+		// TODO: Include maximum occurrences and known wrong placement
 		includedLetters = new HashSet<Character>();
 		knownLetters = new HashMap<Integer, Character>();
 		dictionary = new HashSet<String>();
@@ -43,11 +44,15 @@ public class WordleSolverApp {
 		processArguments(args);
 
 		Set<String> words = getPossibleWords();
-		System.out.println("-= POSSIBLE WORDS =-");
-		for (String word : words) {
-			System.out.println(word);
+		if (words.size() <= 35) {
+			System.out.println("-= POSSIBLE WORDS =-");
+			for (String word : words) {
+				System.out.println(word);
+			}
+		} else {
+			System.out.println("-= TOO MANY POSSIBLE WORDS =-");
+			System.out.printf("There are %d words", words.size());
 		}
-
 	}
 
 	/**
