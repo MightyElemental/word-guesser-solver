@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -41,6 +42,12 @@ public class WordleSolverApp {
 
 		processArguments(args);
 
+		Set<String> words = getPossibleWords();
+		System.out.println("-= POSSIBLE WORDS =-");
+		for (String word : words) {
+			System.out.println(word);
+		}
+
 	}
 
 	/**
@@ -58,6 +65,24 @@ public class WordleSolverApp {
 			e.printStackTrace();
 		}
 		System.out.printf("Loaded %d words\n", dictionary.size());
+	}
+
+	public static Set<String> getPossibleWords() {
+		return dictionary.stream().filter(s -> s.length() == wordLength).filter(str -> {
+			HashSet<Character> set = new HashSet<>();
+			str.chars().forEach(e -> set.add((char) e));
+			// Set contains all include letters and does not contain any exclude letters
+			return set.containsAll(includedLetters) && !set.removeAll(excludedLetters);
+		}).filter(s -> {
+			for (Map.Entry<Integer, Character> entry : knownLetters.entrySet()) {
+				Integer key = entry.getKey();
+				Character val = entry.getValue();
+				if (s.charAt(key) != val) return false;
+			}
+			return true;
+		})
+
+				.collect(Collectors.toSet());
 	}
 
 	/**
