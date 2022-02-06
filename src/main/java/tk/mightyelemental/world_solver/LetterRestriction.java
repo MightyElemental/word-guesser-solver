@@ -5,19 +5,19 @@ import java.util.Set;
 
 public class LetterRestriction {
 
-	/** The number of times the letter can occur */
-	public int maxOccurrences = 5;
+	/** Whether or not the letter can occur multiple times */
+	public boolean multipleOccurrences = true;
 
 	/** The collection of indexes where the letter is known to be wrong */
 	public Set<Integer> wrongPlacements;
 
 	public LetterRestriction() {
-		this(5);
+		this(true);
 	}
 
-	public LetterRestriction( int maxOccur ) {
+	public LetterRestriction( boolean multipleOccur ) {
 		wrongPlacements = new LinkedHashSet<Integer>();
-		maxOccurrences = maxOccur;
+		multipleOccurrences = multipleOccur;
 	}
 
 	/**
@@ -34,10 +34,10 @@ public class LetterRestriction {
 	@Override
 	public String toString() {
 		// Don't display if it is the default
-		if (maxOccurrences == 5) {
+		if (!multipleOccurrences) {
 			return String.format("[wp=%s]", wrongPlacements);
 		}
-		return String.format("[max=%d, wp=%s]", maxOccurrences, wrongPlacements);
+		return String.format("[pm, wp=%s]", wrongPlacements);
 	}
 
 }

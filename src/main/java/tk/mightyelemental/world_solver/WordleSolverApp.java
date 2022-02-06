@@ -82,8 +82,15 @@ public class WordleSolverApp {
 			for (int i = 0; i < str.length(); i++) {
 				char c = str.charAt(i);
 				if (includedLetters.containsKey(c)) {
+					// Ensure the word does not have a letter in the wrong place
 					if (includedLetters.get(c).wrongPlacements.contains(i)) {
 						return false;
+					}
+					// If there cannot be multiple occurrences of a letter, exclude words that have multiple
+					if (!includedLetters.get(c).multipleOccurrences) {
+						if (str.chars().filter(chr -> chr == c).count() > 1) {
+							return false;
+						}
 					}
 				}
 			}
@@ -100,9 +107,7 @@ public class WordleSolverApp {
 				if (s.charAt(key) != val) return false;
 			}
 			return true;
-		})
-
-				.collect(Collectors.toSet());
+		}).collect(Collectors.toSet());
 	}
 
 	/**
@@ -143,6 +148,8 @@ public class WordleSolverApp {
 	}
 
 	/**
+	 * Process an input and its result and add the gained information to the knowledge base
+	 * 
 	 * @param input the guessed word
 	 * @param result the result of the guessed word
 	 */
@@ -161,19 +168,15 @@ public class WordleSolverApp {
 				}
 				// Put data into knowledge base
 				knownLetters.put(i, input.charAt(i));
-				// includedLetters.add(input.charAt(i));
 				addIncludedLetter(input.charAt(i), -1);
 
 			} else {
-				// TODO: Test for max occurrences
 				switch (result.charAt(i)) {
 					case '?':
-						// includedLetters.add(input.charAt(i));
 						addIncludedLetter(input.charAt(i), i);
 						break;
 					case '!':
-						// TODO: Write exclude case
-						excludedLetters.add(input.charAt(i));
+						addExcludedLetter(input.charAt(i));
 						break;
 					default:
 						error("Unknown character in result string");
@@ -186,9 +189,27 @@ public class WordleSolverApp {
 		System.out.printf("Excluded: %s\n", excludedLetters);
 		System.out.printf("Included: %s\n", includedLetters);
 		System.out.printf("Known: %s\n", currentWord());
-		System.out.printf("Potential Words: %d\n", countPossibleWords());
+		System.out.printf("Potential words: %d\n", countPossibleWords());
 		System.out.println("---\n");
 
+	}
+
+	/**
+	 * Adds a letter to the {@link #excludedLetters} collection. If the {@link #includedLetters} collection already has
+	 * the letter provided, the multiple occurrences will be set to false. This is under the (untested) assumption that
+	 * there can be no more than 2 occurrences of a letter in a 5-letter word. HOWEVER, this does mean it may not work
+	 * for words larger than 5 letters.
+	 * 
+	 * @param c the letter to exclude
+	 */
+	public static void addExcludedLetter( char c ) {
+		if (includedLetters.containsKey(c)) {
+			/* If the letter is rejected but was previously accepted, this likely means it 
+			 * does not occur multiple times */
+			includedLetters.get(c).multipleOccurrences = false;
+		} else {
+			excludedLetters.add(c);
+		}
 	}
 
 	/**
@@ -203,6 +224,9 @@ public class WordleSolverApp {
 		} else {
 			includedLetters.put(c, new LetterRestriction().addWrongPlacement(index));
 		}
+		// A letter cannot be included and excluded at the same time.
+		// Included letters take priority
+		excludedLetters.remove(c);
 	}
 
 	/**
