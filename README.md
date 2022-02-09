@@ -9,6 +9,7 @@ This is not ascociated with the game in any official sense. I made this as a sid
 ## Setup
 1. Download the jar file (or build from source)
 2. Download a dictionary file\*
+3. Rename the file to `english.txt` and place next to the jar file
 
 \*For the dictionary, I selected the 'ENGLISH - 194,000 words TXT' option from the following website: http://www.gwicks.net/dictionaries.htm
 
