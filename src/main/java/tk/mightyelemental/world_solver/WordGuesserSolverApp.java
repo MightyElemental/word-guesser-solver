@@ -42,6 +42,9 @@ public class WordGuesserSolverApp {
 
 		processArguments(args);
 
+		// TODO: Add suggested word
+		// This would include an analysis of the potential words to find the most useful one to eliminate words
+
 		Set<String> words = getPossibleWords();
 		if (words.size() <= 35) {
 			System.out.println("-= POSSIBLE WORDS =-");
@@ -215,6 +218,7 @@ public class WordGuesserSolverApp {
 		if (includedLetters.containsKey(c)) {
 			/* If the letter is rejected but was previously accepted, this likely means it 
 			 * does not occur multiple times */
+			// TODO: Fix to allow more occurrences. E.g. 'rarer'
 			includedLetters.get(c).multipleOccurrences = false;
 		} else {
 			excludedLetters.add(c);
